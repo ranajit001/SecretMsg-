@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecretMsg - Send Secret Messages Anonymously</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="./Index/index.css">
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="overlay"></div>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="#" class="logo">SecretMsg</a>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="nav-links" id="nav-links">
+                <a href="#home">Home</a>
+                <a href="#instructions">Instructions</a>
+                <a href="#contact">Contact</a>
+                <a href="#" target="_blank">GitHub</a>
+                <button id="login-btn" style="display:none;"><i class="fas fa-sign-in-alt"></i> Login</button>
+                <button id="logout-btn" style="display:none;"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+        <!-- Arrow to guide user down -->
+        <div style="text-align:center; margin: 1.5rem 0 2rem 1.5rem;">
+            <i class="fas fa-arrow-down" style="font-size:2rem; color:#ff0000; animation:bounce 1.2s infinite;"></i>
+            <div style="color:#ffffff; font-size:1.1rem;">Refresh the page to see new received messages</div>
+        </div>
+        <div class="hero-card">
+            <div class="hero-illustration">
+                <i class="fas fa-user-secret"></i>
+            </div>
+            <div class="hero-title">Send Secret Messages Anonymously</div>
+            <div class="hero-subtitle">
+                Share your link and let others send you secret messages.<br>
+                Messages are private and self-destruct after being read.
+            </div>
+
+            <p id="user-info"  >Welcome...</p>
+            <p>Messages will appear below.</p>
+           
+
+         <!-- Received Messages Section -->
+        <div id="messages-list" style="max-width:430px; margin:1.5rem auto 2rem auto; 
+        background:rgba(34,40,49,0.55); border-radius:7px; padding:1.2rem;
+         box-shadow:0 4px 18px rgba(35,213,171,0.13); min-height:80px;
+         word-wrap: break-word;overflow-wrap: break-word;
+         "> 
+            <div class="no-messages" style="color:#fff; text-align:center;">Login to see your messages.</div>
+        </div>
+
+
+            <!-- generate link buttom -->
+            <div class="cta-btns">
+                <button id="create-link-btn">
+                    <i class="fas fa-link"></i> Create your own link
+                </button>
+            </div>
+
+
+            <div class="instructions" id="instructions">
+                <strong>How it works:</strong>
+                <ul>
+                    <li>Click <b>Create your own link</b> to get your unique link.</li>
+                    <li>Share your link with friends or on social media.</li>
+                    <li>Anyone can send you a secret message using your link.</li>
+                    <li>You will never know who sent the message!</li>
+                    <li>Messages expire 24 hours after your account is created.</li>
+                </ul>
+            </div>
+
+
+
+
+            <!-- Generated Link Box (hidden by default) -->
+            <div class="generated-link-box" id="generated-link-box" style="display:none;">
+                <div><strong>Your receiving link:</strong></div>
+                <div class="link-row">
+                    <span id="generated-link" style="font-weight:500;"></span>
+                    <button class="copy-btn" id="copy-link-btn"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="share-row">
+                    <a href="#" id="share-whatsapp" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#" id="share-facebook" title="Share on Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="#" id="share-twitter" title="Share on Twitter"><i class="fab fa-x-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+
+
+    </section>
+    <style>
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0);}
+        50% { transform: translateY(10px);}
+    }
+    .message-card {
+        background: rgba(255,255,255,0.08);
+        border-radius: 10px;
+        margin-bottom: 0.7rem;
+        padding: 0.8rem 1rem;
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(35,213,171,0.07);
+    }
+    .msg-time {
+        font-size: 0.92rem;
+        color: #23d5ab;
+        margin-top: 0.3rem;
+    }
+    </style>
+
+    <!-- Modal for Registration -->
+    <div class="modal-bg" id="modal-bg">
+        <div class="modal">
+            <button class="close-btn" id="close-modal">&times;</button>
+            <h2>Create Your Account</h2>
+            <form id="register-form" autocomplete="off">
+                <label for="reg-name">Name</label>
+                <input type="text" id="reg-name" name="name" required placeholder="Your Name">
+                <label for="reg-username">Username</label>
+                <input type="text" id="reg-username" name="username" required placeholder="Choose a username">
+                <div class="username-status" id="username-status"></div>
+                <label for="reg-password">Password</label>
+                <input type="password" id="reg-password" name="password" required placeholder="Password">
+                <button type="submit" class="submit-btn">Generate Link</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Floating Login Modal -->
+    <div class="login-modal-bg" id="login-modal-bg">
+        <div class="login-modal">
+            <button class="close-btn" id="close-login-modal">&times;</button>
+            <h2>Login to SecretMsg</h2>
+            <form id="login-form" autocomplete="off">
+                <label for="login-username">Username</label>
+                <input type="text" id="login-username" name="username" required placeholder="Your username">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" name="password" required placeholder="Password">
+                <button type="submit" class="submit-btn">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About</h3>
+                <p>SecretMsg is a secure platform for sending self-destructing messages.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>Email: xx</p>
+                <p>Location: xx</p>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="https://github.com/" target="_blank"><i class="fab fa-github"></i></a>
+                    <a href="https://www.facebook.com/"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.linkedin.com/in/"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="made-with-love">
+            Made with <span style="color:#ff0080;">&#10084;</span> by Sumon | &copy; 2025 SecretMsg
+        </div>
+    </footer>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
+     <script type="module" src="./Index/index.js"></script>  
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret Message</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="msg.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="#" class="logo">SecretMsg</a>
+            <button class="mobile-menu-btn" style="margin-right: 3rem;">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#keypoints">Key Points</a>
+                <a href="#contact">Contact</a>
+                <a href="https://github.com/yourusername/secret-message" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" id="home">
+        <div class="container animate__animated animate__fadeIn">
+            <h1 class="animate__animated animate__fadeInDown" style="color: #ffffff;">Send Secret Message</h1>
+            <div class="dynamic-time" id="time-remaining"> This link is valid till : 
+                 <span id="timeValue" style="color: rgb(255, 255, 255);"> 00 hr : 00 min : 00 sec </span>
+            </div>
+
+            <div class="send-info" id="send-info">
+                Whisper a message to <span class="recipient-name" style="color:#764ba2;font-weight:800;"></span>.<br>
+                he/she will have no idea who did it!
+            </div>
+
+            <form class="message-form">
+                <div class="textarea-wrapper">
+                    <span class="textarea-icon"><i class="fas fa-user-secret"></i></span>
+                    <textarea 
+                        placeholder="Type your secret message here..."
+                        required
+                        class="animate__animated animate__fadeInUp"
+                    ></textarea>
+                </div>
+                <div class="action-btns">
+                    <button type="submit" class="animate__animated animate__fadeInUp" id="sendtn">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                    <a href="../index.html" id="create-link-btn" class="animate__animated animate__fadeInUp">
+                        <i class="fas fa-link"></i> Create your own link
+                    </a>
+                </div>
+            </form>
+            <ul class="key-points keypoints" id="keypoints">
+                <li>Messages expire 24 hours after account creation.</li>
+                <li>Senders can only send messages within the valid time window.</li>
+                <li>Each user gets a unique receiving link for secret messages.</li>
+                <li>Messages are private and not stored after being read.</li>
+            </ul>
+            <p class="info animate__animated animate__fadeInUp" style="color: black; font-family:Arial, Helvetica, sans-serif;">
+                Your message will be delivered securely and will not be accessible after the time expires.
+            </p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About</h3>
+                <p>SecretMsg is a secure platform for sending self-destructing messages.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>Email: xx</p>
+                <p>Location: xx</p>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="https://github.com/" target="_blank"><i class="fab fa-github"></i></a>
+                    <a href="https://www.facebook.com/"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.linkedin.com/in/"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="made-with-love">
+            Made with <span style="color:#ff0080;">&#10084;</span> by Sumon | &copy; 2025 SecretMsg
+        </div>
+    </footer>
+
+<script type="module" src="./msg.js"></script>
+</body>
+</html>
