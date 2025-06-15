@@ -113,6 +113,7 @@ document.getElementById('register-form').onsubmit = async function(e) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, username, password })
     });
+    console.log(res);
     const data = await res.json();                                                                          
     if (res.ok && data.token && data.id) {
         token = data.token;

@@ -48,9 +48,21 @@ async function urlValidate() {
 
             // Start timer to update every second
             if (!timerStarted) {
-                setInterval(() => {
+                const timerInterval = setInterval(() => {
                     expiryTimestamp -= 1000;
-                    document.getElementById('timeValue').textContent =`${msToHMS(expiryTimestamp)}`;
+                    if (expiryTimestamp <= 0) {
+                        clearInterval(timerInterval);
+                        document.getElementById('timeValue').textContent = "00hr : 00min : 00sec";
+                        alert("This link has expired.");
+                        // Optionally, disable form or redirect
+                        textareaWrapper.style.display = 'none';
+                        actionBtns.style.display = 'none';
+                        sendNewBtn.style.display = 'none';
+                        // Optionally, redirect:
+                        // window.location.href = "../index.html";
+                        return;
+                    }
+                    document.getElementById('timeValue').textContent = `${msToHMS(expiryTimestamp)}`;
                 }, 1000);
                 timerStarted = true;
             }
