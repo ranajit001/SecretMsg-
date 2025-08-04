@@ -4,7 +4,7 @@ import { UserModel } from '../models/user.model.js';
 
 
 
-cron.schedule('0 */12 * * *', async () => {
+cron.schedule('0 */24 * * *', async () => {
   console.log('Cron job running every 12 hours');
   await cleanUpMessages();
 });
@@ -12,7 +12,7 @@ cron.schedule('0 */12 * * *', async () => {
 
 
 
-// Inside your cron job or cleanup function
+
 const cleanUpMessages = async () => {
   try {
     // Get all existing user IDs (who have not been deleted)
