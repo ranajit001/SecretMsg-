@@ -18,22 +18,21 @@ const timeRemain = (user)=>{
             return ans>0 ? ans :null;
 }
 
-//created at to actual date +1 day formater
-const  createdAt_to_dateAndTime = (isoString)=> {
-    const date = new Date(isoString);
-    // Add 1 day
-    date.setDate(date.getDate() + 1);
-    // Format to '16 June, 06:03 AM' (without year)
-    const options = {
-        day: '2-digit',
-        month: 'long',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
-    };
+const createdAt_to_dateAndTime = (isoString) => {
+  const date = new Date(isoString);
+  date.setDate(date.getDate() + 1); // add 24h
+  const options = {
+    day: '2-digit',
+    month: 'long',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+    timeZone: 'Asia/Kolkata' // 💥 Force IST even in UTC servers
+  };
 
-    return date.toLocaleString('en-IN', options);
-}
+  return date.toLocaleString('en-IN', options);
+};
+
 
 
 
