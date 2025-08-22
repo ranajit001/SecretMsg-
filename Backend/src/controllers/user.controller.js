@@ -21,6 +21,7 @@ const timeRemain = (user)=>{
 const createdAt_to_dateAndTime = (isoString) => {
   const date = new Date(isoString);
   date.setDate(date.getDate() + 1); // add 24h
+
   const options = {
     day: '2-digit',
     month: 'long',
@@ -40,7 +41,8 @@ const createdAt_to_dateAndTime = (isoString) => {
 
 
 
-export const register = async(req,res)=>{  
+export const register = async(req,res)=>{   
+
 
     try {
         let {name,username,password} = req.body;
@@ -49,18 +51,22 @@ export const register = async(req,res)=>{
                 return res.status(400).json({message:'name username and password is required.'});
         
         const hash = await argon2.hash(password);
-        const user = await UserModel.create({name,username,password:hash});
+        const user = await UserModel.create({name,username,password:hash});      
+        
             await allUserModel.create({name}) // => only saving name of register user permanently...
-        res.status(200).json({
-            id:user._id,
-             message:'created',
-             token:token(user),
-             name:user.name,
-             time:createdAt_to_dateAndTime(user.createdAt)
-            });
+res
+  .cookie("token", token(user), {httpOnly: true,  secure: false,sameSite: "strict",maxAge: 1000 * 60 * 60 * 24,  })
+  .status(200)
+  .json({
+      id: user._id,
+      message: "created",
+      name: user.name,
+      createdAt: createdAt_to_dateAndTime(user.createdAt),
+  });
+
         
     } catch (error) {
-        if (error.code == 11000)return res.status(409).json({message:'Duplicate username'})
+        if (error.code == 11000)return res.status(409).json({message:'This username is already taken'})
          res.status(500).json({message:`${error.message} server error`})
          console.log(error);
          
@@ -81,14 +87,16 @@ export const login = async(req,res)=>{
 
 
         if(await argon2.verify(user.password,password))
-            return res.status(200).json({ 
+            return res
+        .cookie('token',token(user,timeRemain(user)),{httpOnly: true,  secure: false,sameSite: "strict" ,maxAge:timeRemain(user)})
+        .status(200).json(
+        {
             id:user._id,
             message:'login success',   
-            token:token(user,timeRemain(user)), 
             name:user.name ,
-            time:createdAt_to_dateAndTime(user.createdAt)
-     
-        });
+            createdAt:createdAt_to_dateAndTime(user.createdAt)
+        }
+      );
             res.status(400).json({message:'Invalid password'})
     } catch (error) {
         console.log(error);
@@ -98,23 +106,33 @@ export const login = async(req,res)=>{
 }
 
 //it will be used in socket.io to ckeck username uniqueness while register
-export const usernameValidator = async(username)=>{ // exported to app.js
+export const usernameValidator = async(username)=>{ console.log(username,'user');
+
+ // exported to app.js
     try {
-        if(!username.trim())
-            return {message:'Please provide a usrname',status:400}
+        if(!username && !username.trim())
+            return {message:'Please provide a usrname',status:400,username}
         const user = await UserModel.findOne({username});
         if(user) 
-           return {message:'This username already taken.',status:409};
-        return{message:'success',status:200}
-    } catch (error) {
-        return {message:'server error',status:500}
+           return {message:'This username is already taken',status:409,username};
+        return{message: 'This username is available!',status:200,username}
+    } catch (error) { console.log(error,'error from username validation check');
+    
+        return {message:'server error',status:500,username}
     }
 }
 
 
+
 //it will be called in every home page reload to verify jwt token from middleware;
 export const loginStatusCheck = (req,res)=>{
-    res.status(200).json({message:'ok'})
+    res
+    .clearCookie('token',{
+        httpOnly: true,
+          secure: false,
+          sameSite: "strict",
+    })
+    .status(200).json({message:'ok'})
 }
 
 
