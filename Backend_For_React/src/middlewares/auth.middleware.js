@@ -10,7 +10,7 @@ config()
 
 export const authMiddleware = (req,res,next)=>{
     const authHeader = req.headers.authorization?.split(' ')[1];
-    const cookieToken = req.cookies?.token?.split(' ')[1]; 
+    const cookieToken = req.cookies?.token; 
     const bodyToken = req.body?.token?.split(' ')[1];
 
     const token = authHeader || cookieToken || bodyToken;

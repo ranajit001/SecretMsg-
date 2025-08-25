@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 import { config } from "dotenv";
 config()
 
-const token = (user,time ='24h')=> `Bearer ${jwt.sign({id:user._id,username:user.name},process.env.jwt,{expiresIn:time})}`;
+const token = (user,time ='24h')=> jwt.sign({id:user._id,username:user.name},process.env.jwt,{expiresIn:time});
 
 
 
