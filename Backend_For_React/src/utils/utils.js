@@ -2,8 +2,8 @@ export const frontedUrl = `https://whispersecretly.netlify.app`
 //"http://localhost:5173";
 
 export const cookiesOptions = {
-      httpOnly: true,   // prevents JS access (recommended for security)
-    secure: true,    // true if using HTTPS (for localhost, keep false)
-    // sameSite: "strict", 
-    // path: "/", 
+      httpOnly: true,   
+    secure: true,   
+     sameSite: "None"
+ 
 }
