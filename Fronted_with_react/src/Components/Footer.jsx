@@ -45,10 +45,10 @@ export const Footer = ()=>{
       <div className="footer-section">
         <h4>Resources</h4>
         <div className="github-links"  style={{margin:'auto'}}>
-          <a href="https://github.com/ranajit001/SecretMsg-/tree/main/Fronted_with_react" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/yourusername/secret-whisper-frontend" target="_blank" rel="noopener noreferrer">
             <Github size={15}/> Frontend Repository
           </a>
-          <a href="https://github.com/ranajit001/SecretMsg-/tree/main/Backend_For_React/src" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/yourusername/secret-whisper-backend" target="_blank" rel="noopener noreferrer">
             <Server size={15}/> Backend Repository
           </a>
         </div>
