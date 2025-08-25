@@ -11,15 +11,23 @@ const token = (user,time ='24h')=> `Bearer ${jwt.sign({id:user._id,username:user
 
 
   // geneerate jwt token expire time according to time left from 24 hrs
-const timeRemain = (user)=>{
-            const createdAt = new Date(user.createdAt);
-            const diff = new Date() - createdAt; //calculating totla time passed from 24 hrs
-            const fullDay = 24 * 60 * 60 * 1000; // 24 hours in ms
-            let ans = Math.floor((fullDay-diff)/1000)
-            return ans>0 ? ans :null;
-}
+  //exported to msg controller also in username validator
+export const timeRemain = (user) => {
+  const createdAtUTC = new Date(user.createdAt);
 
-const createdAt_to_dateAndTime = (isoString) => {
+  const istOffset = 5.5 * 60 * 60 * 1000; // IST = UTC+5:30
+  const createdAtIST = new Date(createdAtUTC.getTime() + istOffset);
+  const nowIST = new Date(Date.now() + istOffset);
+
+  const diff = nowIST - createdAtIST;
+  const fullDay = 24 * 60 * 60 * 1000; // 24 hours in ms
+
+  let ans = Math.floor((fullDay - diff) / 1000);
+  return ans > 0 ? ans : 0;
+};
+
+//exported to msg.controller
+export const createdAt_to_dateAndTime = (isoString) => {
   const date = new Date(isoString);
   date.setDate(date.getDate() + 1); // add 24h
 
@@ -55,14 +63,15 @@ export const register = async(req,res)=>{
         const user = await UserModel.create({name,username,password:hash});      
         
             await allUserModel.create({name}) // => only saving name of register user permanently...
-res
-  .cookie("token", token(user), {...cookiesOptions,maxAge: 1000 * 60 * 60 * 24,  })
-  .status(200)
-  .json({
-      id: user._id,
-      message: "created",
-      name: user.name,
-      createdAt: createdAt_to_dateAndTime(user.createdAt),
+
+        res
+        .cookie("token", token(user), {...cookiesOptions,maxAge: 1000 * 60 * 60 * 24,  })
+        .status(200)
+        .json({
+                id: user._id,
+                message: "created",
+                name: user.name,
+                createdAt: createdAt_to_dateAndTime(user.createdAt),
   });
 
         
@@ -89,25 +98,23 @@ export const login = async(req,res)=>{
 
         if(await argon2.verify(user.password,password))
             return res
-        .cookie('token',token(user,timeRemain(user)), {...cookiesOptions,maxAge:timeRemain(user)})
-        .status(200).json(
-        {
-            id:user._id,
-            message:'login success',   
-            name:user.name ,
-            createdAt:createdAt_to_dateAndTime(user.createdAt)
-        }
-      );
-            res.status(400).json({message:'Invalid password'})
+                .cookie('token',token(user,timeRemain(user)), {...cookiesOptions,maxAge:timeRemain(user)*1000})
+                .status(200).json({
+                                id:user._id,
+                                message:'login success',   
+                                name:user.name ,
+                                createdAt:createdAt_to_dateAndTime(user.createdAt)
+                                });
+
+                res.status(400).json({message:'Invalid password'})
     } catch (error) {
         console.log(error,'from login user');
-        
         res.status(500).json({message:`Server error,${error.messae}`})
     }
 }
 
 //it will be used in socket.io to ckeck username uniqueness while register
-export const usernameValidator = async(username)=>{ console.log(username,'user');
+export const usernameValidator = async(username)=>{ //console.log(username,'user');
 
  // exported to app.js
     try {
@@ -126,8 +133,16 @@ export const usernameValidator = async(username)=>{ console.log(username,'user')
 
 
 //it will be called in every home page reload to verify jwt token from middleware;
-export const loginStatusCheck = (req,res)=>{
+export const loginStatusCheck = (req,res)=>{// console.log('user verified');
+
 res.status(200).json({message:'ok'})
 }
 
+export const logout = (req,res)=>{// console.log('logout called');
+    res
+    .status(200)
+    .clearCookie('token',cookiesOptions)
+    .json({ message: "Logged out successfully" });
+
+}
 

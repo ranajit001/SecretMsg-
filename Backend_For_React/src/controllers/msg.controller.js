@@ -2,13 +2,16 @@ import { MsgModel } from "../models/msg.model.js";
 import { UserModel } from "../models/user.model.js";
 import mongoose from "mongoose";
 
+import { timeRemain } from "./user.controller.js";
+import { createdAt_to_dateAndTime } from "./user.controller.js";
+
 export const sendMsg = async (req, res) => {
 
     const MAX_RETRIES = 3;
 
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) { 
         try { 
-            const id = req.query.id;
+            const id = req.params.id;
             const msg = req.body.message.trim(); 
 
             if (!id )
@@ -42,28 +45,37 @@ export const sendMsg = async (req, res) => {
     }
 };
 
-//exported to app.js
-export const getMsg = async(id)=>{
+export const getMsg = async(req,res)=>{  console.log('coming to getmsg');
+
     try {
     
-        if(!id) return {message:'invalid url, no id found',status:400}
-        if (!mongoose.Types.ObjectId.isValid(id)) { 
-            return { message: 'Invalid user ID',status:400};
-        }
+        const id = req.user.id;
+        if(!id)
+             return res.status(400).json({message:'invalid url, no id found'});
+
+        if (!mongoose.Types.ObjectId.isValid(id)) 
+            return res.status(400).json({ message: 'Invalid user ID' });
+        
         const messages = await MsgModel.find({to:id});
-        if(messages.length>0 )
-                return {message:messages,status:200}
-        return {message:'No message found',status404}
+
+        if(messages )
+            return res.status(200).json({message:messages})
+
+        res.status(404).json({message:'No message found'})
     } catch (error) {
-        return{message:error.message,status:500}
+        res.status(500).json({message:error.message})
     }
 };
 
-//when frined put myy sended url this will run to validate my id
-export const sendMsg_urlValidator = async(req,res)=>{ 
 
+
+
+
+
+//when frined put myy sended url this will run to validate my id
+export const sendMsg_urlValidator = async(req,res)=>{ //console.log(`comming to validate url`);
     try {
-        const id = req.query.id;
+        const id = req.params.id;
         if(!id) 
             return res.status(404).json({message:'Invalid url'})
         if (!mongoose.Types.ObjectId.isValid(id))
@@ -73,7 +85,7 @@ export const sendMsg_urlValidator = async(req,res)=>{
             return res.status(404).json({message:'User not found...'})
 
          res.status(200).json({
-            time:remainTime(user),
+            validTill:createdAt_to_dateAndTime(user.createdAt),
             name:user.name,
         });
     } catch (error) {
@@ -83,11 +95,3 @@ export const sendMsg_urlValidator = async(req,res)=>{
 };
 
 
-function remainTime(user){
-    const createdAt = new Date(user.createdAt);
-const now = new Date();
-
-const msIn24Hours = 24 * 60 * 60 * 1000;
-const timePassed = now - createdAt;
-    return msIn24Hours - timePassed;
-}

@@ -1,0 +1,56 @@
+.reg-container{
+  border: 2px solid white;
+  width: 18rem;
+  padding: 1.5rem;
+  color: rgb(201, 233, 255);
+  background:linear-gradient(135deg, #FF7A30 0%, #00297c 100%);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+}
+.reg-container h2{
+  text-align: center;
+  margin-bottom:1rem;
+}
+
+
+
+
+
+
+.reg-container label {
+  display: block;
+  text-align: left;
+  margin: 0.6rem 0 0.3rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.reg-container input {
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  border: none;
+  outline: none;
+  margin-bottom: 0.8rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.reg-container input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+.reg-container input:focus {
+  background: rgba(0, 195, 234, 0.25);
+  box-shadow: 0 0 0.5rem rgba(255, 255, 255, 0.2);
+  border: 1px solid rgb(255, 115, 0);
+}
+
+.reg-container form button{
+    border: 1px solid;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+    transition: all 0.3s ease;
+
+}

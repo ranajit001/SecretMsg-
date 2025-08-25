@@ -4,7 +4,7 @@ import { UserModel } from '../models/user.model.js';
 
 
 
-cron.schedule('0 */24 * * *', async () => {
+cron.schedule('5 * * * *', async () => { // due to spin dont in 15 mnt of render running thiscron job too fast, every 5mnt
   console.log('Cron job running every 12 hours');
   await cleanUpMessages();
 });
@@ -22,8 +22,6 @@ const cleanUpMessages = async () => {
     const result = await MsgModel.deleteMany({
       to: { $nin: existingUserIds },
     });
-
-    console.log(`${result.deletedCount} orphaned messages deleted.`);
   } catch (error) {
     console.error('Error while cleaning messages:', error.message);
   }

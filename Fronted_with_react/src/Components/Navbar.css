@@ -1,0 +1,55 @@
+.navbar{
+    z-index: 1000;
+    display: flex;
+    gap: 1.7rem;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    background: rgba(20,45,63,1);
+    height: 3.5rem;
+    backdrop-filter: blur(10px);          /* main frosted glass effect */
+    -webkit-backdrop-filter: blur(10px);  /* Safari support */
+    box-shadow: 0 4px 30px rgba(140, 0, 255, 0.1);
+}
+
+.hemberger{
+    padding-left: 1rem;
+    color: #d1d0d0;
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+}
+
+.navbar h1{
+    font-size: 2.3rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.sidebar{
+    margin-top: 9.9rem;
+    position: fixed;
+    left: -100%;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    height: 6rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.sidebar li{
+    padding: 0.5rem;
+    margin: 0.3rem;
+    border-radius: 0.2rem;
+}
+.sidebar li:hover{
+    background-color: rgb(181, 0, 63);
+}
+.open{
+    list-style-type:none;
+    left:0rem;
+    transition:cubic-bezier(0.55, 0.085, 0.68, 0.53);
+    transition-duration: 0.2s;
+    background: #386641; 
+    backdrop-filter: blur(10px);          /* main frosted glass effect */
+  -webkit-backdrop-filter: blur(10px);  /* Safari support */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* soft shadow */
+}
