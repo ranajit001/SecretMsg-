@@ -67,7 +67,8 @@ export const Body = ({setIsOpen}) => {
             setMessages(data.message)
           }
     } catch (error) {
-        alert(error.message)
+console.log(error);
+
     }
   }
 
